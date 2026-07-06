@@ -20,49 +20,49 @@ No v1 product behavior lives outside this plan: every DESIGN.md commitment maps 
 
 | # | Issue file | Title (short) | Wave | GitHub |
 |---|---|---|---|---|
-| 01 | [01-repo-scaffold-python-package.md](./issues/01-repo-scaffold-python-package.md) | Python package scaffold + tooling | 0 | (pending) |
-| 02 | [02-config-schema-and-loader.md](./issues/02-config-schema-and-loader.md) | Config schema, loader, XDG paths | 0 | (pending) |
-| 03 | [03-logging-and-redaction.md](./issues/03-logging-and-redaction.md) | Logging + secrets redaction | 0 | (pending) |
-| 04 | [04-sqlite-persistence-and-migrations.md](./issues/04-sqlite-persistence-and-migrations.md) | SQLite layer, migrations, retention | 0 | (pending) |
-| 05 | [05-ci-github-actions.md](./issues/05-ci-github-actions.md) | Core CI workflow | 0 | (pending) |
-| 06 | [06-camera-source-interface-and-replay-source.md](./issues/06-camera-source-interface-and-replay-source.md) | CameraSource contract + replay source | 1 | (pending) |
-| 07 | [07-rtsp-and-usb-camera-sources.md](./issues/07-rtsp-and-usb-camera-sources.md) | RTSP + USB sources | 1 | (pending) |
-| 08 | [08-mjpeg-and-snapshot-http-sources.md](./issues/08-mjpeg-and-snapshot-http-sources.md) | MJPEG + snapshot HTTP sources | 1 | (pending) |
-| 09 | [09-capture-scheduler-and-camera-health.md](./issues/09-capture-scheduler-and-camera-health.md) | Capture scheduler + health SM + event bus | 1 | (pending) |
-| 10 | [10-roi-extraction-and-preprocessing.md](./issues/10-roi-extraction-and-preprocessing.md) | ROI/preprocess utils + fixture corpus | 2 | (pending) |
-| 11 | [11-reader-plugin-interface.md](./issues/11-reader-plugin-interface.md) | Reader interface + config models | 2 | (pending) |
-| 12 | [12-led-lamp-state-reader.md](./issues/12-led-lamp-state-reader.md) | LED/lamp reader | 2 | (pending) |
-| 13 | [13-seven-segment-digit-reader.md](./issues/13-seven-segment-digit-reader.md) | Seven-segment reader | 2 | (pending) |
-| 14 | [14-change-detection-reader.md](./issues/14-change-detection-reader.md) | Change-detection reader | 2 | (pending) |
-| 15 | [15-stabilizer-and-sensor-pipeline.md](./issues/15-stabilizer-and-sensor-pipeline.md) | Stabilizer + sensor pipeline | 2 | (pending) |
-| 16 | [16-fastapi-skeleton-and-token-auth.md](./issues/16-fastapi-skeleton-and-token-auth.md) | FastAPI skeleton + token auth + serve | 3 | (pending) |
-| 17 | [17-rest-api-cameras-and-sensors.md](./issues/17-rest-api-cameras-and-sensors.md) | REST: cameras + sensors | 3 | (pending) |
-| 18 | [18-rest-api-readings-and-events.md](./issues/18-rest-api-readings-and-events.md) | REST: readings + events | 3 | (pending) |
-| 19 | [19-websocket-live-updates.md](./issues/19-websocket-live-updates.md) | WebSocket live updates + tickets | 3 | (pending) |
-| 20 | [20-mqtt-client-and-topic-schema.md](./issues/20-mqtt-client-and-topic-schema.md) | MQTT client + topics + publishing | 4 | (pending) |
-| 21 | [21-home-assistant-mqtt-discovery.md](./issues/21-home-assistant-mqtt-discovery.md) | HA MQTT Discovery | 4 | (pending) |
-| 22 | [22-home-assistant-actuator-bridge.md](./issues/22-home-assistant-actuator-bridge.md) | HA actuator bridge (REST client) | 4 | (pending) |
-| 23 | [23-appliance-model-and-actions-api.md](./issues/23-appliance-model-and-actions-api.md) | Appliance/actions model + API | 4 | (pending) |
-| 24 | [24-verified-control-state-machine.md](./issues/24-verified-control-state-machine.md) | Verified-control state machine + run API | 4 | (pending) |
-| 25 | [25-webui-scaffold-and-build-integration.md](./issues/25-webui-scaffold-and-build-integration.md) | Web UI scaffold + build integration | 5 | (pending) |
-| 26 | [26-webui-auth-and-api-client.md](./issues/26-webui-auth-and-api-client.md) | Web UI auth + typed API/WS client | 5 | (pending) |
-| 27 | [27-webui-camera-management.md](./issues/27-webui-camera-management.md) | Web UI camera management | 5 | (pending) |
-| 28 | [28-webui-roi-editor-and-sensor-config.md](./issues/28-webui-roi-editor-and-sensor-config.md) | Web UI ROI editor + sensor config | 5 | (pending) |
-| 29 | [29-webui-dashboard.md](./issues/29-webui-dashboard.md) | Web UI dashboard + events | 5 | (pending) |
-| 30 | [30-webui-appliance-control-panel.md](./issues/30-webui-appliance-control-panel.md) | Web UI appliance control panel | 5 | (pending) |
-| 31 | [31-cli-core-and-read-commands.md](./issues/31-cli-core-and-read-commands.md) | CLI core + read commands + diag | 6 | (pending) |
-| 32 | [32-cli-appliance-control.md](./issues/32-cli-appliance-control.md) | CLI appliance control | 6 | (pending) |
-| 33 | [33-menubar-app-scaffold.md](./issues/33-menubar-app-scaffold.md) | Menu bar app scaffold | 7 | (pending) |
-| 34 | [34-menubar-sensor-status.md](./issues/34-menubar-sensor-status.md) | Menu bar sensor status | 7 | (pending) |
-| 35 | [35-menubar-appliance-controls.md](./issues/35-menubar-appliance-controls.md) | Menu bar appliance controls + notifications | 7 | (pending) |
-| 36 | [36-secrets-handling-and-server-hardening.md](./issues/36-secrets-handling-and-server-hardening.md) | Security hardening pass + guards | 8 | (pending) |
-| 37 | [37-supply-chain-security-ci.md](./issues/37-supply-chain-security-ci.md) | Supply-chain security automation | 8 | (pending) |
-| 38 | [38-docker-packaging.md](./issues/38-docker-packaging.md) | Docker packaging | 8 | (pending) |
-| 39 | [39-pypi-packaging-and-release.md](./issues/39-pypi-packaging-and-release.md) | PyPI packaging + release workflow | 8 | (pending) |
-| 40 | [40-documentation-and-guides.md](./issues/40-documentation-and-guides.md) | Documentation set | 8 | (pending) |
-| 41 | [41-e2e-integration-test-suite.md](./issues/41-e2e-integration-test-suite.md) | E2E scenario suite | 8 | (pending) |
+| 01 | [01-repo-scaffold-python-package.md](./issues/01-repo-scaffold-python-package.md) | Python package scaffold + tooling | 0 | [#1](https://github.com/Saber5656/iotify/issues/1) |
+| 02 | [02-config-schema-and-loader.md](./issues/02-config-schema-and-loader.md) | Config schema, loader, XDG paths | 0 | [#2](https://github.com/Saber5656/iotify/issues/2) |
+| 03 | [03-logging-and-redaction.md](./issues/03-logging-and-redaction.md) | Logging + secrets redaction | 0 | [#3](https://github.com/Saber5656/iotify/issues/3) |
+| 04 | [04-sqlite-persistence-and-migrations.md](./issues/04-sqlite-persistence-and-migrations.md) | SQLite layer, migrations, retention | 0 | [#4](https://github.com/Saber5656/iotify/issues/4) |
+| 05 | [05-ci-github-actions.md](./issues/05-ci-github-actions.md) | Core CI workflow | 0 | [#5](https://github.com/Saber5656/iotify/issues/5) |
+| 06 | [06-camera-source-interface-and-replay-source.md](./issues/06-camera-source-interface-and-replay-source.md) | CameraSource contract + replay source | 1 | [#6](https://github.com/Saber5656/iotify/issues/6) |
+| 07 | [07-rtsp-and-usb-camera-sources.md](./issues/07-rtsp-and-usb-camera-sources.md) | RTSP + USB sources | 1 | [#7](https://github.com/Saber5656/iotify/issues/7) |
+| 08 | [08-mjpeg-and-snapshot-http-sources.md](./issues/08-mjpeg-and-snapshot-http-sources.md) | MJPEG + snapshot HTTP sources | 1 | [#8](https://github.com/Saber5656/iotify/issues/8) |
+| 09 | [09-capture-scheduler-and-camera-health.md](./issues/09-capture-scheduler-and-camera-health.md) | Capture scheduler + health SM + event bus | 1 | [#9](https://github.com/Saber5656/iotify/issues/9) |
+| 10 | [10-roi-extraction-and-preprocessing.md](./issues/10-roi-extraction-and-preprocessing.md) | ROI/preprocess utils + fixture corpus | 2 | [#10](https://github.com/Saber5656/iotify/issues/10) |
+| 11 | [11-reader-plugin-interface.md](./issues/11-reader-plugin-interface.md) | Reader interface + config models | 2 | [#11](https://github.com/Saber5656/iotify/issues/11) |
+| 12 | [12-led-lamp-state-reader.md](./issues/12-led-lamp-state-reader.md) | LED/lamp reader | 2 | [#12](https://github.com/Saber5656/iotify/issues/12) |
+| 13 | [13-seven-segment-digit-reader.md](./issues/13-seven-segment-digit-reader.md) | Seven-segment reader | 2 | [#13](https://github.com/Saber5656/iotify/issues/13) |
+| 14 | [14-change-detection-reader.md](./issues/14-change-detection-reader.md) | Change-detection reader | 2 | [#14](https://github.com/Saber5656/iotify/issues/14) |
+| 15 | [15-stabilizer-and-sensor-pipeline.md](./issues/15-stabilizer-and-sensor-pipeline.md) | Stabilizer + sensor pipeline | 2 | [#15](https://github.com/Saber5656/iotify/issues/15) |
+| 16 | [16-fastapi-skeleton-and-token-auth.md](./issues/16-fastapi-skeleton-and-token-auth.md) | FastAPI skeleton + token auth + serve | 3 | [#16](https://github.com/Saber5656/iotify/issues/16) |
+| 17 | [17-rest-api-cameras-and-sensors.md](./issues/17-rest-api-cameras-and-sensors.md) | REST: cameras + sensors | 3 | [#17](https://github.com/Saber5656/iotify/issues/17) |
+| 18 | [18-rest-api-readings-and-events.md](./issues/18-rest-api-readings-and-events.md) | REST: readings + events | 3 | [#18](https://github.com/Saber5656/iotify/issues/18) |
+| 19 | [19-websocket-live-updates.md](./issues/19-websocket-live-updates.md) | WebSocket live updates + tickets | 3 | [#19](https://github.com/Saber5656/iotify/issues/19) |
+| 20 | [20-mqtt-client-and-topic-schema.md](./issues/20-mqtt-client-and-topic-schema.md) | MQTT client + topics + publishing | 4 | [#20](https://github.com/Saber5656/iotify/issues/20) |
+| 21 | [21-home-assistant-mqtt-discovery.md](./issues/21-home-assistant-mqtt-discovery.md) | HA MQTT Discovery | 4 | [#21](https://github.com/Saber5656/iotify/issues/21) |
+| 22 | [22-home-assistant-actuator-bridge.md](./issues/22-home-assistant-actuator-bridge.md) | HA actuator bridge (REST client) | 4 | [#22](https://github.com/Saber5656/iotify/issues/22) |
+| 23 | [23-appliance-model-and-actions-api.md](./issues/23-appliance-model-and-actions-api.md) | Appliance/actions model + API | 4 | [#23](https://github.com/Saber5656/iotify/issues/23) |
+| 24 | [24-verified-control-state-machine.md](./issues/24-verified-control-state-machine.md) | Verified-control state machine + run API | 4 | [#24](https://github.com/Saber5656/iotify/issues/24) |
+| 25 | [25-webui-scaffold-and-build-integration.md](./issues/25-webui-scaffold-and-build-integration.md) | Web UI scaffold + build integration | 5 | [#25](https://github.com/Saber5656/iotify/issues/25) |
+| 26 | [26-webui-auth-and-api-client.md](./issues/26-webui-auth-and-api-client.md) | Web UI auth + typed API/WS client | 5 | [#26](https://github.com/Saber5656/iotify/issues/26) |
+| 27 | [27-webui-camera-management.md](./issues/27-webui-camera-management.md) | Web UI camera management | 5 | [#27](https://github.com/Saber5656/iotify/issues/27) |
+| 28 | [28-webui-roi-editor-and-sensor-config.md](./issues/28-webui-roi-editor-and-sensor-config.md) | Web UI ROI editor + sensor config | 5 | [#28](https://github.com/Saber5656/iotify/issues/28) |
+| 29 | [29-webui-dashboard.md](./issues/29-webui-dashboard.md) | Web UI dashboard + events | 5 | [#29](https://github.com/Saber5656/iotify/issues/29) |
+| 30 | [30-webui-appliance-control-panel.md](./issues/30-webui-appliance-control-panel.md) | Web UI appliance control panel | 5 | [#30](https://github.com/Saber5656/iotify/issues/30) |
+| 31 | [31-cli-core-and-read-commands.md](./issues/31-cli-core-and-read-commands.md) | CLI core + read commands + diag | 6 | [#31](https://github.com/Saber5656/iotify/issues/31) |
+| 32 | [32-cli-appliance-control.md](./issues/32-cli-appliance-control.md) | CLI appliance control | 6 | [#32](https://github.com/Saber5656/iotify/issues/32) |
+| 33 | [33-menubar-app-scaffold.md](./issues/33-menubar-app-scaffold.md) | Menu bar app scaffold | 7 | [#33](https://github.com/Saber5656/iotify/issues/33) |
+| 34 | [34-menubar-sensor-status.md](./issues/34-menubar-sensor-status.md) | Menu bar sensor status | 7 | [#34](https://github.com/Saber5656/iotify/issues/34) |
+| 35 | [35-menubar-appliance-controls.md](./issues/35-menubar-appliance-controls.md) | Menu bar appliance controls + notifications | 7 | [#35](https://github.com/Saber5656/iotify/issues/35) |
+| 36 | [36-secrets-handling-and-server-hardening.md](./issues/36-secrets-handling-and-server-hardening.md) | Security hardening pass + guards | 8 | [#36](https://github.com/Saber5656/iotify/issues/36) |
+| 37 | [37-supply-chain-security-ci.md](./issues/37-supply-chain-security-ci.md) | Supply-chain security automation | 8 | [#37](https://github.com/Saber5656/iotify/issues/37) |
+| 38 | [38-docker-packaging.md](./issues/38-docker-packaging.md) | Docker packaging | 8 | [#38](https://github.com/Saber5656/iotify/issues/38) |
+| 39 | [39-pypi-packaging-and-release.md](./issues/39-pypi-packaging-and-release.md) | PyPI packaging + release workflow | 8 | [#39](https://github.com/Saber5656/iotify/issues/39) |
+| 40 | [40-documentation-and-guides.md](./issues/40-documentation-and-guides.md) | Documentation set | 8 | [#40](https://github.com/Saber5656/iotify/issues/40) |
+| 41 | [41-e2e-integration-test-suite.md](./issues/41-e2e-integration-test-suite.md) | E2E scenario suite | 8 | [#41](https://github.com/Saber5656/iotify/issues/41) |
 
-The GitHub column is filled in after issues are created (issue numbers are expected to match the file numbers 1:1 on this fresh repository).
+GitHub issue numbers match the file numbers 1:1 (created 2026-07-06 in order on the fresh repository).
 
 ## 3. Dependency table
 
