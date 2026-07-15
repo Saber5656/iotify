@@ -9,7 +9,8 @@ The repository currently contains only `README.md` and `docs/`. All subsequent i
 ## Scope
 - `pyproject.toml` (hatchling build backend, project metadata, `iotify` console script)
 - `src/iotify/__init__.py` (`__version__ = "0.1.0.dev0"`), `src/iotify/__main__.py` (delegates to CLI entry point placeholder that prints version and exits 0)
-- Package subdirectories from DESIGN §4.3 as empty packages with `__init__.py`: `cli`, `config`, `events`, `cameras`, `sensing`, `sensing/readers`, `storage`, `storage/migrations` (as package data dir), `integrations/mqtt`, `control`, `server`, `server/api`
+- Importable package subdirectories from DESIGN §4.3 as empty packages with `__init__.py`: `cli`, `config`, `events`, `cameras`, `sensing`, `sensing/readers`, `storage`, `integrations/mqtt`, `control`, `server`, `server/api`
+- `storage/migrations/` exists as package data for SQL files, not as an importable Python package.
 - `tests/` with `unit/`, `integration/`, `e2e/`, `fixtures/images/.gitkeep` and one placeholder test asserting the package imports and version string
 - Tooling config: ruff (lint+format), mypy (strict for `src/iotify`), pytest (`tests/`), coverage config
 - `uv.lock` committed; `Makefile` with targets `setup`, `lint`, `typecheck`, `test`, `run`
@@ -28,7 +29,8 @@ The repository currently contains only `README.md` and `docs/`. All subsequent i
 - [ ] `uv sync && make lint typecheck test` passes on a clean checkout (macOS and Linux).
 - [ ] `uv run iotify version` prints `0.1.0.dev0`.
 - [ ] `python -m iotify` behaves identically to the console script.
-- [ ] All directories from DESIGN §4.3 exist as importable packages.
+- [ ] All importable package directories from DESIGN §4.3 exist as packages.
+- [ ] `storage/migrations/` exists as package data, not an importable package.
 - [ ] LICENSE (Apache-2.0), `.gitignore`, `.editorconfig`, `CONTRIBUTING.md` present.
 - [ ] No file in the repo exceeds pre-commit size limits; `uv.lock` committed.
 

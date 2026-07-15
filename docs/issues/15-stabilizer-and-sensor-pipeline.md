@@ -27,7 +27,7 @@ This issue turns parts (scheduler, readers, storage, bus) into the product's sen
    - `BecameUnreadable/Readable` → bus `sensor.availability {available, reason}`;
    - change-reader `raw.snapshot_requested` → JPEG of the full ROI saved to `<data>/snapshots/change/<sensor_id>/<ts>.jpg` (quality 80), path embedded in the `sensor.state_changed` payload; files subject to retention (issue 04).
 9. Camera health events: camera OFFLINE → all its sensors get availability false (`camera_offline`); ONLINE recovery → readers/stabilizers reset (fresh window, change-reader `_prev` cleared).
-10. `test_read` runs synchronously on the latest cached frame with `debug=True` support, bypassing the stabilizer, never persisting.
+10. `test_read` runs synchronously on the latest cached frame with `debug=True` support, bypassing the stabilizer, never persisting, and never mutating the live per-sensor reader/stabilizer state. Use a disposable reader instance or snapshot/restore reader state around the read so change-reader `_prev` and cooldown state cannot perturb the scheduled pipeline.
 11. Sensor CRUD hot-reload: update replaces reader+stabilizer atomically; delete stops processing before repo cascade delete (no reads on deleted sensors).
 12. Metrics counters (in-memory, exposed via §7.2 `/system/info` later): frames processed, reads, read errors, per-sensor last_read_ts.
 
@@ -39,6 +39,7 @@ This issue turns parts (scheduler, readers, storage, bus) into the product's sen
 - [ ] End-to-end (replay camera → led sensor → bus): scripted lamp-on sequence yields the expected single state_changed with persisted reading (integration test, no network).
 - [ ] Change-reader snapshot file written once per event, path in payload, deleted by retention test.
 - [ ] Camera OFFLINE cascades availability to its sensors; recovery resets stabilizer windows (asserted via no stale-value report).
+- [ ] `test_read` on a change sensor does not advance the live reader `_prev`/cooldown state (assert scheduled next frame is identical with and without a prior debug read).
 
 ## Validation
 `pytest tests/unit/sensing/test_stabilizer.py` (fake clock, ≥ 15 cases) + `tests/integration/test_pipeline_replay.py` (replay camera + tmp DB + real bus; marked integration, runs in CI).

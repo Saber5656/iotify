@@ -15,9 +15,7 @@ A cheap camera (RTSP cam, USB webcam, ESP32-CAM, old phone running an MJPEG app)
 
 The differentiating capability is **camera-verified closed-loop control**: infrared and other retrofit actuation is open-loop (a command may silently fail), but iotify sends the command *and then watches the device with the camera* to confirm the state actually changed, retrying if it did not.
 
-```
-  "Did the AC actually turn on?"  →  iotify knows, because it is looking at it.
-```
+> "Did the AC actually turn on?" → iotify knows, because it is looking at it.
 
 ### 1.1 Example user stories
 
@@ -151,7 +149,7 @@ In-process **event bus** (`iotify.events.bus`): typed async pub/sub, topics = ev
 
 ### 4.3 Repository layout (target)
 
-```
+```text
 pyproject.toml            # hatchling, src layout
 src/iotify/
   __init__.py             # __version__
@@ -445,15 +443,17 @@ OpenAPI schema served at `/api/v1/openapi.json` (auth-gated).
 
 ## 8. MQTT and Home Assistant integration
 
-### 8.1 Topic schema (base topic configurable, default `iotify`)
+### 8.1 Topic schema
+
+All topics are under configured `mqtt.base_topic` (default `iotify`). The table below uses `<base_topic>` to avoid treating the default as a hard-coded prefix.
 
 | Topic | Retain | Payload |
 |---|---|---|
-| `iotify/bridge/status` | yes (LWT) | `online` / `offline` |
-| `iotify/sensor/<id>/state` | yes | reading JSON (§6.2) + `{"confidence":…,"ts":…}` |
-| `iotify/sensor/<id>/availability` | yes | `online` / `offline` |
-| `iotify/camera/<id>/status` | yes | `{"state":"online"…}` |
-| `iotify/appliance/<id>/result` | no | verification outcome JSON (§9.4) |
+| `<base_topic>/bridge/status` | yes (LWT) | `online` / `offline` |
+| `<base_topic>/sensor/<id>/state` | yes | reading JSON (§6.2) + `{"confidence":…,"ts":…}` |
+| `<base_topic>/sensor/<id>/availability` | yes | `online` / `offline` |
+| `<base_topic>/camera/<id>/status` | yes | `{"state":"online"…}` |
+| `<base_topic>/appliance/<id>/result` | no | verification outcome JSON (§9.4) |
 
 QoS 1 for state/availability; client id `iotify-<hostid>`; automatic reconnect with exponential backoff (1→60 s, jitter); session-expiry so retained availability stays coherent with LWT.
 
@@ -506,6 +506,8 @@ An **appliance** groups named **actions**. An action = one HA service call + opt
 
 `service_data` values may contain `{{params.<key>}}` placeholders substituted from the run request's `params` object. Substitution is **strict string/number replacement only** (no expression language, no nested lookup) — a deliberately tiny surface; unknown placeholders → `400`.
 
+Client surfaces keep parameter form state string-based in v1 (Web UI, CLI, and menu bar all submit strings), and the server owns deterministic coercion before rendering `service_data`. Each declared parameter has server-returned metadata (`type: "string" | "number"`, default `"string"`) derived from action configuration; placeholders for numeric HA service fields must render JSON numbers, not quoted numeric strings.
+
 ### 9.3 Expectation DSL (`verify_expect`)
 
 Exactly one key per expectation:
@@ -533,7 +535,7 @@ stateDiagram-v2
   PENDING --> ABORTED: shutdown
 ```
 
-Rules: one in-flight run per appliance (else `409 busy`); every transition emits `verification.update` on the bus (→ WS + `events` table), terminal states also publish `iotify/appliance/<id>/result`; expectation evaluation consumes **stable** (post-stabilizer) readings only; `run_id` = UUIDv4; runs are kept in memory and mirrored to `events` (no dedicated table in v1).
+Rules: one in-flight run per appliance (else `409 busy`); every transition emits `verification.update` on the bus (→ WS + `events` table), and the MQTT publisher converts terminal transitions into `<base_topic>/appliance/<id>/result`; expectation evaluation consumes **stable** (post-stabilizer) readings only; `run_id` = UUIDv4; runs are kept in memory and mirrored to `events` (no dedicated table in v1).
 
 Failure modes documented for implementers: HA reachable but wrong entity (`FAILED_SERVICE` with HA message), camera offline during verify (fail fast with `reason: sensor_unavailable`), sensor deleted mid-run (abort), hub restart (in-flight runs are lost; MQTT result not sent — documented limitation).
 

@@ -12,7 +12,7 @@ Terminal control is the fastest Mac surface and the automation hook (Raycast/scr
 ## Detailed Requirements
 1. `iotify appliance list`: table — id, name, actions (name + param names + verify badge), warnings (`verify_sensor_missing` flagged); `--json` mirrors API.
 2. `iotify appliance run <appliance_id> <action> [--param k=v]* [--no-verify] [--no-wait] [--timeout-extra 30]`:
-   - params: repeated `--param temperature=26`; values passed as strings (server coerces per §9.2); missing/extra params surface the server 400 verbatim;
+   - params: repeated `--param temperature=26`; values passed as strings (server coerces using action param metadata per §9.2); missing/extra/invalid typed params surface the server 400 verbatim;
    - dispatch → `202 {run_id}`; `--no-wait` prints `run_id` and exits 0 immediately;
    - default wait mode: subscribe WS (`verification_update` filtered by run_id; fallback: poll `runs/{id}` every 1 s when WS unavailable) rendering a single self-updating status line (rich): `SENDING (attempt 1/3) → VERIFYING 12s/20s → VERIFIED in 8.2s`; non-TTY stdout → plain line per transition;
    - client-side safety timeout: server-derived worst case `(settle+timeout_s)×(1+retries) + timeout-extra` then exit 1 with "gave up waiting (run may still complete)" + run_id.

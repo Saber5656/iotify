@@ -15,7 +15,7 @@ The lamp reader is the cheapest, highest-value reader (washer done-lamp, router 
    - Focus metric: mean of the top 20 % brightest-delta pixels (`p80` mask) — robust to a small LED inside a larger ROI.
    - `state = "on"` iff metric ≥ `on_threshold` (default 0.25); `brightness` = metric (0..1, rounded 2dp).
    - Confidence: `min(1, |metric − on_threshold| / on_threshold)` scaled to 0.5–1.0 band when clearly on/off; ≤ 0.5 near the threshold.
-2. **Color mode** (`mode="color"`, no baseline required): pixels with `S ≥ 80` and `V ≥ 100` form the lit mask; if lit-mask fraction < 2 % → `state="off"`, color null. Else `state="on"` and `color` = argmax over hue-bin ranges: red (H<10 or H≥170), orange (10–22), yellow (22–35), green (35–85), blue (85–130), white (S<80 & V≥200 fallback bin). Only bins listed in `color_bins` config compete.
+2. **Color mode** (`mode="color"`, no baseline required): pixels with `(S ≥ 80 and V ≥ 100) OR (S < 80 and V ≥ 200)` form the lit mask so white LEDs count as lit; if lit-mask fraction < 2 % → `state="off"`, color null. Else `state="on"` and `color` = argmax over hue-bin ranges: red (H<10 or H≥170), orange (10–22), yellow (22–35), green (35–85), blue (85–130), white (S<80 & V≥200 fallback bin). Only bins listed in `color_bins` config compete.
 3. Missing required calibration → `Reading(confidence=0, raw={"error":"missing_calibration:baseline_off"})` (pipeline surfaces availability per issue 11 contract).
 4. Baseline/ROI size mismatch (ROI edited after calibration) → same missing-calibration error path with reason `stale_calibration`.
 5. `raw` debug payload: `{metric, threshold, lit_fraction, hue_histogram(12 bins)}` — powers the UI test-read panel (issue 28).
@@ -23,7 +23,7 @@ The lamp reader is the cheapest, highest-value reader (washer done-lamp, router 
 
 ## Acceptance Criteria
 - [ ] Golden tests: ≥ 6 on/off pairs (incl. 1 glare case) classified correctly in brightness mode with default threshold.
-- [ ] Color mode classifies red/green/blue/orange synthetic LEDs correctly and returns `off` for the dark frame.
+- [ ] Color mode classifies red/green/blue/orange/white synthetic LEDs correctly and returns `off` for the dark frame.
 - [ ] Threshold-adjacent case yields confidence ≤ 0.5.
 - [ ] Missing/stale calibration cases return the exact `raw.error` strings above.
 - [ ] Reading shape passes `validate_reading_shape("led", …)` for every test output.

@@ -15,12 +15,12 @@ Unlike led/sevenseg, change detection is inherently temporal: it compares agains
    a. gray → gaussian blur (`blur_sigma`),
    b. reference = `fixed_baseline` (calibration image `reference`, required) or rolling previous frame (`rolling_previous`, default; first call → `stable` with magnitude 0 and prev initialized),
    c. `absdiff` → count pixels > `pixel_threshold` → `magnitude` = changed fraction (0..1),
-   d. `changed` iff magnitude ≥ `area_threshold` **and** now − `_last_changed_ts` ≥ `cooldown_s` (cooldown consumes the trigger: during cooldown report `stable` but still update magnitude),
+   d. `changed` iff magnitude ≥ `area_threshold` **and** `now_ms - _last_changed_ts >= cooldown_s * 1000` (cooldown consumes the trigger: during cooldown report `stable` but still update magnitude),
    e. rolling mode updates `_prev` every call *after* diffing.
-3. `ctx` carries `now_ms` (added to `ReadContext` in this issue; pipeline injects; tests use fake clocks — readers never call `time.time()` directly, keeping determinism).
+3. `ctx.now_ms` comes from `ReadContext` (issue 11); pipeline injects it; tests use fake clocks — readers never call `time.time()` directly, keeping determinism.
 4. `save_snapshot=true`: the reader does **not** write files (I/O-free contract); it sets `raw={"snapshot_requested": true, …}`. The pipeline (issue 15) persists the triggering frame under `<data>/snapshots/change/` and embeds the path in the event payload. This issue only sets the flag and documents that contract.
 5. Confidence: `min(1.0, magnitude / (2*area_threshold))` for `changed`; `1 - magnitude/area_threshold` clipped to [0.5,1] for `stable` well below threshold.
-6. `raw`: `{magnitude, threshold: area_threshold, cooldown_remaining_s}`.
+6. `raw`: `{magnitude, threshold: area_threshold, cooldown_remaining_s}`; remaining cooldown is calculated in milliseconds and converted back to seconds only for this reported field.
 
 ## Acceptance Criteria
 - [ ] Sequence test (mailbox-style 6-frame fixture): exactly one `changed` at the change frame, `stable` elsewhere, with rolling reference.

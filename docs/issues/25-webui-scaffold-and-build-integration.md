@@ -13,7 +13,7 @@ ADR-003 fixes the web stack; DESIGN §11.1 lists the pages. This issue delivers 
 - CI: add `web` job (node 22, `npm ci`, eslint, `tsc --noEmit`, vitest, build; upload dist artifact).
 
 ## Detailed Requirements
-1. Final CSP header for HTML responses (supersedes issue 16 placeholder): `default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' ws: wss:; frame-ancestors 'none'; base-uri 'none'` — no third-party origins ever (ADR-004-1); fonts system-stack only.
+1. Final CSP header for HTML responses (supersedes issue 16 placeholder): `default-src 'self'; script-src 'self'; style-src 'self'; style-src-attr 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' <same hub ws-origin>; frame-ancestors 'none'; base-uri 'none'` — no third-party origins ever (ADR-004-1); fonts system-stack only. Generate `<same hub ws-origin>` from the request origin (`ws://host[:port]` or `wss://host[:port]`) instead of allowing scheme-wide `ws:`/`wss:`.
 2. No runtime dependency added beyond: react, react-dom, react-router, recharts (declared now, used in 29); dev-only tooling as above. Every later dep addition needs a rationale line (DESIGN §12.3-5).
 3. Vite `base: '/'`; hashed filenames on build; bundle budget: initial JS ≤ 300 KB gzipped (CI check via a small script reading `dist/` sizes; warning at 250 KB, fail > 300 KB).
 4. Placeholder pages render a titled empty state; login route renders an unstyled token form placeholder (real auth in 26).
@@ -24,7 +24,7 @@ ADR-003 fixes the web stack; DESIGN §11.1 lists the pages. This issue delivers 
 - [ ] `make web-build && iotify serve` serves the SPA shell at `/` with SPA fallback (`/dashboard` deep link works, `/api/v1/system/info` still 401s without token).
 - [ ] Dev proxy: UI on the Vite port reaches the hub API and WS without CORS errors (documented smoke, screencast optional).
 - [ ] CI `web` job green: eslint, tsc, vitest (one placeholder test), build + size budget.
-- [ ] CSP header present on `index.html` responses exactly as specified; hashed assets get `immutable` caching.
+- [ ] CSP header present on `index.html` responses exactly as specified, including same-hub-only WebSocket `connect-src`; hashed assets get `immutable` caching.
 - [ ] Fresh clone without `make web-build` → hub still boots; `/` returns the actionable 404 hint.
 
 ## Validation

@@ -14,7 +14,7 @@ CI must exist before feature waves so every subsequent issue lands gated (DESIGN
 
 ## Detailed Requirements
 1. Every third-party action pinned to a full commit SHA with a version comment (ADR-004-6).
-2. Trigger on `pull_request` and `push` to `main` only.
+2. Trigger on `pull_request`, `push` to `main`, and `workflow_call` so the release workflow (issue 39) can reuse the same test matrix before publishing.
 3. Cache uv (`~/.cache/uv`) keyed on `uv.lock` hash + python version.
 4. Mosquitto service container config: anonymous access enabled for CI only via a checked-in `tests/integration/mosquitto-ci.conf` mounted into the service (documented as CI-only in a header comment).
 5. Total `python` job time budget ≤ 10 min per matrix cell at current repo size; fail the build on any warning from ruff.
@@ -27,6 +27,7 @@ CI must exist before feature waves so every subsequent issue lands gated (DESIGN
 - [ ] macOS and Linux cells both run all unit tests.
 - [ ] All actions SHA-pinned; workflow permissions are read-only.
 - [ ] Docs-only PRs skip the matrix.
+- [ ] `ci.yml` exposes `on: workflow_call` and can be invoked from a scratch caller workflow without changing job semantics.
 
 ## Validation
 Open a draft PR with an intentional ruff violation → red; fix → green. Confirm Mosquitto service boots (job log) even with zero integration tests.

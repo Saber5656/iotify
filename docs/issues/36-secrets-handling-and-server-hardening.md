@@ -35,7 +35,7 @@ Individual issues carry their own security criteria; this issue is the adversari
 New `tests/security/` suite in CI; manual guide walk-through evidence in PR.
 
 ## Dependencies
-16, 17, 19, 20, 22, 25, 26, 31, 33 (surfaces must exist to be audited).
+16, 17, 19, 20, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35 (all API, control, real Web UI, CLI, and menu bar surfaces must exist to be audited).
 
 ## Non-goals
 No new features; no sandboxed decoding or DB encryption (v2 candidates per ADR-004); no penetration test (external, post-v1).

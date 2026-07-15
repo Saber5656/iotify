@@ -14,7 +14,7 @@ These read-only endpoints power the dashboard charts (29), CLI watch/tail (31), 
    - `from`/`to`: epoch ms; defaults `to=now`, `from=to−24h`; reject `from>to` (422) and ranges > 90 days (422, matches max retention);
    - `limit` default 1000, max 10000; `downsample` = target bucket count 10–2000, mutually exclusive with `limit` honored as documented: when `downsample` set, use repo bucket query (issue 04-4), else raw rows capped by `limit` (newest first);
    - response rows: `{ts, value, confidence}` (+ `{min,max}` per bucket for numeric downsampled).
-2. `GET /readings/latest`: array of `{sensor_id, ts, value, confidence, available: bool, age_s}` for every enabled sensor (availability from pipeline state, not DB).
+2. `GET /readings/latest`: array of `{sensor_id, name, reader_type, unit?, camera_id, camera_name?, ts, value, confidence, available: bool, unavailable_reason?, age_s}` for every enabled sensor (availability from pipeline state, not DB). This endpoint is the dashboard/menu-bar initial and polling source, so it must include enough display metadata to render tiles without an unspecified extra join.
 3. `GET /events?kind=&from=&to=&limit=`: kind filter validated against the §6.5 enum (422 otherwise); limit default 100 max 1000; newest first; payload passed through as stored JSON.
 4. All three endpoints set `Cache-Control: no-store`; timings logged at debug only.
 5. Response size guard: downsampled numeric response for 90 days × 2000 buckets must serialize < 1 MiB (integration-tested with synthetic data).

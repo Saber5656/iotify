@@ -11,7 +11,7 @@ This is the product's headline feature (research takeaway 5): IR/BLE actuation i
 - Run endpoints in `src/iotify/server/api/appliances.py`.
 
 ## Detailed Requirements
-1. **Dispatch**: render `service_data` templates with `params` (strict §9.2: missing param → 400 before any state change; extra params → 400); transition PENDING→SENDING; call `HaClient.call_service`.
+1. **Dispatch**: render `service_data` templates with `params` (strict §9.2: missing param → 400 before any state change; extra params → 400); coerce submitted string values using the action's `params[{name,type}]` metadata before rendering (`number` must parse to a finite JSON number, `string` remains a string); transition PENDING→SENDING; call `HaClient.call_service`.
 2. **No verify clause or `verify=false`**: HA 2xx → terminal `DONE_UNVERIFIED`; HA error → `FAILED_SERVICE {error, ha_message}`.
 3. **Verify path**: after 2xx wait `settle_delay_s` (AWAITING_EFFECT) then VERIFYING: subscribe to the verify sensor's **stable** outputs (bus `sensor.state_changed` + current last stable value from pipeline — evaluate immediately in case the state was already reached);
    - expectation evaluation per §9.3 (implement all five keys; `changed_within_s` = a change event with ts ≥ dispatch_ts within n seconds);
@@ -19,7 +19,7 @@ This is the product's headline feature (research takeaway 5): IR/BLE actuation i
    - `verify_timeout_s` elapsed → attempt += 1; if attempt ≤ 1+`verify_retries` → re-dispatch (back to SENDING; re-render templates once, reuse); else `FAILED_TIMEOUT`;
    - verify sensor unavailable at start or becomes unavailable → fail fast `FAILED_TIMEOUT` variant `{reason:"sensor_unavailable"}` **without** retries (a blind retry with no working sensor is spray-and-pray; documented §9.4).
 4. Concurrency: per-appliance asyncio lock; busy → API 409 `{running_run_id}`; global cap 4 concurrent runs (503 beyond, `Retry-After: 5`); shutdown → in-flight runs → `ABORTED` (lifespan hook order: engine stops before HA client closes).
-5. Every transition: bus `verification.update {appliance_id, action, run_id, state, attempt, detail?}` → events table + WS (`verification_update`); terminal states additionally MQTT `iotify/appliance/<id>/result` (QoS 1, not retained) `{run_id, action, state, attempts, started_ts, ended_ts, verify_latency_ms?}`.
+5. Every transition: bus `verification.update {appliance_id, action, run_id, state, attempt, detail?}` → events table + WS (`verification_update`); terminal states are consumed by the MQTT publisher (issue 20) and published to `topics.appliance_result(base_topic, appliance_id)` (QoS 1, not retained) as `{run_id, action, state, attempts, started_ts, ended_ts, verify_latency_ms?}`. The verification engine emits bus events only and does not import MQTT internals.
 6. `RunHandle`/`GET runs/{run_id}` shape: `{run_id, appliance_id, action, state, attempt, params, verify: bool, transitions: [{state, ts}], result?}`; unknown run → 404 (registry is in-memory; document restart loss, DESIGN §9.4).
 7. Timing uses the injected clock abstraction (fake-clock tests); no `sleep` loops — event-driven waits with `asyncio.wait_for`.
 8. `verify_sensor_missing` warned actions (issue 23-4) run unverified with the warning copied into the run record.
@@ -28,6 +28,7 @@ This is the product's headline feature (research takeaway 5): IR/BLE actuation i
 - [ ] Happy path (stub HA 2xx + replay-camera led flips on): PENDING→…→VERIFIED, one MQTT result, WS updates in order, latency recorded.
 - [ ] Retry path: sensor never flips → exactly `1+retries` service calls at correct fake-clock times → FAILED_TIMEOUT.
 - [ ] Already-satisfied expectation verifies without waiting for a new reading.
+- [ ] Numeric param metadata renders HA `service_data` values as JSON numbers (`{"temperature":26}`), not strings; invalid numeric input fails 400 before any HA call.
 - [ ] HA 500 → FAILED_SERVICE with HA message; no retry when retries=0 semantics honored (`retries` counts *verification* retries, not HTTP).
 - [ ] Busy appliance → 409 with running id; 5th concurrent run → 503; shutdown mid-run → ABORTED terminal event emitted.
 - [ ] Sensor unavailable mid-verify → fail fast, no further dispatches.

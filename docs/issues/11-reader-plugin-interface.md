@@ -15,22 +15,22 @@ Sensors store `reader_type` + `reader_config` JSON (DESIGN §6.1/§6.3). The API
       @abstractmethod
       def read(self, image: np.ndarray, ctx: ReadContext) -> Reading: ...
   ```
-  `ReadContext` dataclass: `{sensor_id: str, calibration: dict[str, np.ndarray]}` — calibration images (e.g., `baseline_off`) are *loaded by the pipeline* and injected, keeping readers I/O-free. `ctx.calibration` may be empty.
+  `ReadContext` dataclass: `{sensor_id: str, calibration: dict[str, np.ndarray], now_ms: int | None = None, debug: bool = False}` — calibration images (e.g., `baseline_off`) are *loaded by the pipeline* and injected, keeping readers I/O-free. `ctx.calibration` may be empty; readers never call wall-clock time directly.
 - Config models `LedConfig`, `SevensegConfig`, `ChangeConfig` with fields/defaults exactly per DESIGN §6.3, `extra="forbid"`, cross-field validators: `decimal_places` and `digit_count` are independently optional, but when both are provided, `decimal_places < digit_count` must hold.
-- Registry: `reader_registry: dict[str, type[Reader]]`; `validate_reader_config(reader_type, raw: dict) -> BaseModel` (raises `ReaderConfigError` with field-level details); `create_reader(reader_type, raw) -> Reader`.
+- Supported config types: `supported_reader_types = {"led", "sevenseg", "change"}` must match the SQL `CHECK` set. Implemented production readers live in `reader_registry: dict[str, type[Reader]]`; `validate_reader_config(reader_type, raw: dict) -> BaseModel` validates against config models even before a concrete reader class lands; `create_reader(reader_type, raw) -> Reader` requires an implemented production reader.
 - Declared calibration requirements: `Reader.required_calibration: ClassVar[set[str]]` (e.g., led-brightness mode → `{"baseline_off"}`); helper `missing_calibration(sensor, images) -> set[str]` used by pipeline/API to surface "needs calibration" instead of failing cryptically.
 
 ## Detailed Requirements
 1. `read()` must not raise for merely-unreadable content — it returns a `Reading` with `confidence=0.0` and a `raw={"error": "<reason>"}`; only programmer errors raise.
 2. `Reading.value` dict must match the §6.2 union for the reader type; a shared `validate_reading_shape(reader_type, value)` helper asserts this in tests and in pipeline debug mode.
-3. Registry raises `ReaderConfigError` listing valid types on unknown `reader_type` (single source of truth: `sensors.reader_type` CHECK values in DESIGN §6.1 — add a cross-check test that the registry keys equal the SQL CHECK set).
-4. Readers are stateless across calls (temporal logic belongs to the stabilizer, issue 15); document this contract in the module docstring.
-5. This issue lands with the three config models plus a `NullReader` (returns `confidence=0` always) registered under a test-only key for pipeline tests; real readers arrive in 12–14 and register themselves here.
+3. Config validation raises `ReaderConfigError` listing valid supported types on unknown `reader_type` (single source of truth: `sensors.reader_type` CHECK values in DESIGN §6.1 — add a cross-check test that `supported_reader_types` equals the SQL CHECK set). A separate registry test asserts production `reader_registry` contains only implemented supported reader keys.
+4. Readers are stateless across calls (temporal logic belongs to the stabilizer, issue 15), except the narrowly documented `ChangeReader` state in issue 14 (`_prev`, `_last_changed_ts`) which is owned by the per-sensor pipeline lifecycle; document this contract and exception in the module docstring.
+5. This issue lands with the three config models plus a `NullReader` (returns `confidence=0` always) exposed through a test-only helper/fixture registry, never through the production `reader_registry`; real readers arrive in 12–14 and register themselves here.
 
 ## Acceptance Criteria
 - [ ] `validate_reader_config("led", {"mode":"brightness"})` returns a `LedConfig` with defaults; unknown field fails with field name in message.
 - [ ] `validate_reader_config` for all three types round-trips the DESIGN §6.3 examples verbatim.
-- [ ] Registry-keys == SQL CHECK values test passes.
+- [ ] `supported_reader_types` == SQL CHECK values test passes, and production `reader_registry` contains no test-only keys.
 - [ ] `missing_calibration` returns `{"baseline_off"}` for a brightness-mode led sensor with no calibration images.
 - [ ] mypy strict; ≥ 12 unit tests.
 

@@ -8,7 +8,7 @@ The owner explicitly chose a v1 menu bar app (ADR-003). v1 distribution is build
 
 ## Scope
 - `macos/IotifyMenuBar/Package.swift` (executable target `IotifyMenuBar`, swift-tools 5.9, platform `.macOS(.v13)`; test target `IotifyMenuBarTests`).
-- Sources: `App.swift` (`@main` `MenuBarExtra` with placeholder menu: status line, "Open Web UI", Settings…, Quit), `Settings/SettingsView.swift` + `SettingsStore.swift`, `Keychain.swift` (Security-framework wrapper: save/load/delete generic password, service `dev.iotify.menubar`, account = hub URL host), `Api/ApiClient.swift`, `Api/Models.swift`, `Api/WsTicketClient.swift` (ticket mint only; WS stream lands in 34), `LoginItem.swift` (`SMAppService.mainApp` register/unregister).
+- Sources: `App.swift` (`@main` `MenuBarExtra` with placeholder menu: status line, "Open Web UI", Settings…, Quit), `Settings/SettingsView.swift` + `SettingsStore.swift`, `Keychain.swift` (Security-framework wrapper: save/load/delete generic password, service `dev.iotify.menubar`, account = normalized full hub origin: scheme + host + explicit/default port), `Api/ApiClient.swift`, `Api/Models.swift`, `Api/WsTicketClient.swift` (ticket mint only; WS stream lands in 34), `LoginItem.swift` (`SMAppService.mainApp` register/unregister).
 - `Makefile` targets: `menubar-build` (`swift build -c release --package-path macos/IotifyMenuBar`), `menubar-run`; `docs/guides/menubar.md` (build/run/grant-notifications, uninstall incl. Keychain cleanup and login-item removal).
 - CI: macOS job step building the package + running unit tests (added to ci.yml).
 
@@ -18,7 +18,7 @@ The owner explicitly chose a v1 menu bar app (ADR-003). v1 distribution is build
 3. Menu placeholder content: connection dot (green ok / red unreachable / grey unconfigured) + hub version when connected; "Open Web UI" opens `hubURL` in default browser; unconfigured state deep-links to Settings.
 4. Poll `systemInfo()` every 30 s for the status dot (timer paused when menu closed is unnecessary in v1 — keep simple, note battery triviality); all requests 10 s timeout.
 5. HTTP allowed: `NSAppTransportSecurity` — SwiftPM executables lack Info.plist by default; provide the bundling recipe: a minimal `Info.plist` via `-Xlinker -sectcreate` alternative is fragile → ship `make menubar-bundle` assembling a minimal `.app` bundle (Contents/MacOS binary + Info.plist template with `NSAllowsLocalNetworking`) — document that plain `swift run` works for `http://127.0.0.1` and the bundle path is for LAN hubs; template committed under `macos/IotifyMenuBar/Bundle/`.
-6. Unit tests (XCTest, no network): ApiClient against `URLProtocol` mock — auth header injection, problem+json mapping, model decoding from fixture JSON (copied from server OpenAPI examples); Keychain wrapper round-trip (uses the real Keychain on CI mac runners — guard with a test-service name and cleanup).
+6. Unit tests (XCTest, no network): ApiClient against `URLProtocol` mock — auth header injection, problem+json mapping, model decoding from fixture JSON (copied from server OpenAPI examples); Keychain wrapper round-trip and origin isolation (`http://host:8799` does not read `https://host:443`) using the real Keychain on CI mac runners — guard with a test-service name and cleanup.
 7. Swift formatting: `swift-format` config committed; CI check step.
 
 ## Acceptance Criteria

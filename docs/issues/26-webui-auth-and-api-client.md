@@ -14,7 +14,7 @@ The hub uses one operator Bearer token (§7.1). The UI must make auth failures o
 
 ## Detailed Requirements
 1. Token storage: `localStorage['iotify.token']` (documented trade-off, DESIGN §12.2 T6); never logged, never in URLs (except never — tickets go in URLs, tokens do not); logout clears storage and in-memory state.
-2. 401 from any call → global handler: clear token, redirect to `/login` with a "session invalid" note (single toast, no loops).
+2. 401 from authenticated API calls → global handler: clear token, redirect to `/login` with a "session invalid" note (single toast, no loops). Login validation handles its own 401 locally and surfaces the problem+json detail inline before any global redirect/clear path runs.
 3. `ApiClient` request defaults: `Accept: application/json`, 15 s timeout via `AbortController`, no retries (UI shows errors; retry is a user action).
 4. WS hook lifecycle: connect only when authenticated + page mounted; visibilitychange pauses reconnection when tab hidden > 5 min; clean close on logout; expose `status: 'connecting'|'live'|'reconnecting'|'off'` for a header indicator.
 5. All §7.2 endpoints typed and covered by at least one vitest each using a fetch mock (msw or hand-rolled): success + problem+json error path.
@@ -24,6 +24,7 @@ The hub uses one operator Bearer token (§7.1). The UI must make auth failures o
 ## Acceptance Criteria
 - [ ] Login with bad token shows the problem+json detail; good token lands on `/dashboard`; refresh keeps session; logout returns to login with storage cleared.
 - [ ] Simulated 401 mid-session (mock) triggers exactly one redirect+toast.
+- [ ] Login validation 401 does not trigger the global session-invalid toast/redirect loop; only non-login authenticated calls do.
 - [ ] WS hook: ticket mint + connect + typed dispatch verified against a mock WS server (vitest + `ws` polyfill or msw-ws); reconnect backoff sequence asserted with fake timers; `gap` triggers `resync`.
 - [ ] `tsc --noEmit` strict passes; every client method has a type test (request/response shapes compile against fixtures copied from server OpenAPI examples).
 - [ ] No token string appears in console logs or URLs (grep test over emitted logs in vitest).
