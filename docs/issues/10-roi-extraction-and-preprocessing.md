@@ -7,7 +7,7 @@ Implement `iotify.sensing.preprocess` (ROI crop, bounds handling, color/gray/HSV
 Readers are pure functions over preprocessed ROI images (DESIGN §10.2). Centralizing preprocessing keeps readers small and makes the fixture corpus (DESIGN §14) reusable and consistent.
 
 ## Scope
-- `src/iotify/sensing/types.py`: `Roi(x, y, w, h)` dataclass; `Reading(value: dict, confidence: float | None, raw: dict | None)`; `RoiOutOfBoundsError`.
+- `src/iotify/sensing/types.py`: `Roi(x, y, w, h)` dataclass; `Reading(value: dict, confidence: float, raw: dict | None)`; `RoiOutOfBoundsError`.
 - `src/iotify/sensing/preprocess.py`:
   - `crop_roi(frame: np.ndarray, roi: Roi) -> np.ndarray` (validates bounds against the frame; raises `RoiOutOfBoundsError`)
   - `to_gray(img)`, `to_hsv(img)`, `normalize_brightness(gray) -> np.ndarray` (CLAHE, clip 2.0, tile 8×8)
