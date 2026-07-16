@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+dist/
+build/
+*.egg-info/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Node / web
+node_modules/
+web/dist/
+
+# Local data
+*.db
+*.db-*
+
+# macOS / editors
+.DS_Store
+.idea/
+.vscode/
