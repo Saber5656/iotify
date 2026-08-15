@@ -1,0 +1,90 @@
+[build-system]
+requires = ["hatchling>=1.26"]
+build-backend = "hatchling.build"
+
+[project]
+name = "iotify"
+version = "0.1.0.dev0"
+description = "Camera-based retrofit IoT kit for local sensor reading and verified control"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "Apache-2.0"
+authors = [
+  { name = "iotify contributors" },
+]
+classifiers = [
+  "Development Status :: 2 - Pre-Alpha",
+  "License :: OSI Approved :: Apache Software License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3 :: Only",
+  "Topic :: Home Automation",
+]
+dependencies = [
+  "pydantic-settings>=2",
+  "pydantic>=2",
+  "pyyaml>=6",
+  "typer>=0.12",
+]
+
+[project.scripts]
+iotify = "iotify.cli.main:app"
+
+[dependency-groups]
+dev = [
+  "mypy>=1.17",
+  "pre-commit>=4.2",
+  "pytest-asyncio>=1.1",
+  "pytest-cov>=6.2",
+  "pytest>=8.4",
+  "ruff>=0.12",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/iotify"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"src/iotify/storage/migrations" = "iotify/storage/migrations"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = [
+  "--strict-config",
+  "--strict-markers",
+  "--cov=iotify",
+  "--cov-report=term-missing",
+]
+asyncio_mode = "auto"
+
+[tool.coverage.run]
+branch = true
+source = ["iotify"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true
+
+[tool.ruff]
+line-length = 100
+src = ["src", "tests"]
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "lf"
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+mypy_path = "src"
+packages = ["iotify"]
+
+[[tool.mypy.overrides]]
+module = ["tests.*"]
+disallow_untyped_defs = false

@@ -1,0 +1,1 @@
+"""Reader plugin package."""
